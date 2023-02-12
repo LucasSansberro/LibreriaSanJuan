@@ -1,0 +1,16 @@
+.img-oferta {
+    width: 80%;
+    height: 200px;
+    margin: 0 auto;
+  }
+  
+  #libros button:hover {
+    background-color: #bb8955;
+  }
+
+  @media only screen and (max-width: 750px) {
+    .img-oferta {
+        height: 300px;
+      }
+  }
+  

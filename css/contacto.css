@@ -1,0 +1,64 @@
+.contenedor-contacto {
+  margin: 0 auto;
+  padding: 20px;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.inputs {
+  padding: 5px;
+  margin-bottom: 15px;
+}
+
+.boton {
+  height: 34px;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+.animacion-boton {
+  height: 34px;
+  transition: all 0.2s ease-in-out;
+}
+
+.texto-boton {
+  display: block;
+  margin-top: 5px;
+}
+
+.animacion-boton:hover {
+  transform: translate3d(0px, -29px, 0px);
+}
+
+.datos-contactos {
+  list-style-type: none;
+}
+
+.texto-datos-contactos {
+  font-size: 1.5em;
+}
+
+.mapa-contacto {
+  width: 100%;
+}
+
+@media only screen and (max-width: 1200px) {
+  .datos-contactos {
+    padding: 0px;
+    padding-bottom: 30px;
+    margin-top: 30px;
+  }
+
+  .texto-datos-contactos {
+    font-size: 0.9em;
+  }
+}
+@media (hover: none) {
+  .fa-paper-plane {
+    display: none;
+  }
+
+  .texto-boton {
+    margin-top: 0px;
+  }
+}
