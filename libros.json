@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "titulo": "Los miserables",
+    "precio": 500,
+    "autor": "Victor Hugo",
+    "portada": "https://peliculasmaslibros.com/wp-content/uploads/2019/09/32697532297_d2da7e750a_k-655x1024.jpg"
+  },
+  {
+    "id": 2,
+    "titulo": "Cumbres borrascosas",
+    "precio": 600,
+    "autor": "Emily Brontë",
+    "portada": "http://d3ugyf2ht6aenh.cloudfront.net/stores/001/111/169/products/portada_cumbres-borrascosas_emily-bronte_2017112813111-0f39c8db0eb50b006715842381072765-640-0.jpg"
+  },
+  {
+    "id": 3,
+    "titulo": "Jane Eyre",
+    "precio": 700,
+    "autor": "Charlotte Brontë",
+    "portada": "https://global-uploads.webflow.com/6034d7d1f3e0f52c50b2adee/625453f3986326e6a6ff7a9d_6034d7d1f3e0f54abdb2b276_Jane-eyre-charlotte-bronte-editorial-alma.jpeg"
+  },
+  {
+    "id": 4,
+    "titulo": "El hombre invisible",
+    "precio": 900,
+    "autor": "Ralph Ellison",
+    "portada": "https://planetalibro.net/biblioteca/r/a/ralph/ralph-ellison-el-hombre-invisible/ralph-ellison-el-hombre-invisible.jpg"
+  },
+  {
+    "id": 5,
+    "titulo": "Madame Bovary",
+    "precio": 1200,
+    "autor": "Gustave Flaubert",
+    "portada": "https://http2.mlstatic.com/D_NQ_NP_880732-MLA51094931075_082022-O.webp"
+  },
+  {
+    "id": 6,
+    "titulo": "Corazón de las tinieblas",
+    "precio": 1200,
+    "autor": "Joseph Conrad",
+    "portada": "https://www.eternacadencia.com.ar/images/stories/virtuemart/product/resized/CorazonDeLasTinieblas_JosephConrad_140x220-02%20_640x640.jpg"
+  },
+  {
+    "id": 7,
+    "titulo": "El conde de Montecristo",
+    "precio": 1800,
+    "autor": "Alejandro Dumas",
+    "portada": "https://images.cdn2.buscalibre.com/fit-in/360x360/07/04/0704ce1dffd2266603eaf84f2c214d11.jpg"
+  },
+  {
+    "id": 8,
+    "titulo": "Los tres mosqueteros",
+    "precio": 1200,
+    "autor": "Alejandro Dumas",
+    "portada": "https://images.cdn3.buscalibre.com/fit-in/360x360/2d/a8/2da82cbaaddce01134626af308eb4f91.jpg"
+  }
+]
