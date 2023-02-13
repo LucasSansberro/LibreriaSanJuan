@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Aboreto&family=Raleway:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="icon" href="../pics/logo-asj.png" />
+    <title>Librería San Juan</title>
+  </head>
+  <body class="crema">
+    <header>
+      <nav>
+        <a href="./index.html" class="ms-3 mt-1 d-block adminLink"> Regresar al index</a>
+      </nav>
+    </header>
+    <h1 class="text-center mt-4">Bienvenido a la consola del administrador</h1>
+
+    <div class="container madera mt-5 pb-3">
+      <h2 class="text-center py-3">Usuarios registrados</h2>
+      <ul class="crema d-flex flex-column justify-content-between" id="listaUsuarios"></ul>
+    </div>
+
+    <div class="container madera mt-5 pb-3">
+      <h2 class="text-center py-3">Libros</h2>
+      <button class="crema mx-auto d-block py-2 w-50 mb-3" onclick="agregarLibro()">
+        Agregar libro
+      </button>
+      <ul class="crema d-flex flex-column justify-content-between" id="listaLibros"></ul>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/admin.js"></script>
+  </body>
+</html>

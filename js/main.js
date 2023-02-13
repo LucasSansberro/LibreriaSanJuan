@@ -13,8 +13,9 @@ const cargaDatos = async () => {
     },
   });
 
-  let librosFetch = await fetch("./libros.json");
-  let libros = await librosFetch.json();
+  const librosFetch = await fetch("http://localhost:3000/libros");
+  const librosJson = await librosFetch.json();
+  const libros = librosJson.libros;
   const librosMasVendidos = libros.slice(0, 3);
 
   document.getElementById("librosCarrousel") != null &&
@@ -156,7 +157,7 @@ const botonEliminador = (id, precio) => {
   let idx = carrito.findIndex((p) => p.id == id);
   let resta = carrito.find((p) => p.precio == precio);
   carrito.splice(idx, 1);
-  precioFinal = precioFinal - resta.precio;
+  precioFinal -= resta.precio;
   render();
 };
 
@@ -188,34 +189,44 @@ document.getElementById("formulario") != null &&
 document.getElementById("formularioContacto") != null &&
   formularioContacto.addEventListener("submit", (e) => {
     e.preventDefault();
-    formularioContacto.reset();
-    Swal.fire({
-      icon: "success",
-      html: `Mensaje enviado. Le contestaremos a la brevedad`,
-      background: "#FFFDD0",
-    });
+    if (sesionIniciadaBoolean) {
+      formularioContacto.reset();
+      Swal.fire({
+        icon: "success",
+        html: `Mensaje enviado. Le contestaremos a la brevedad`,
+        background: "#FFFDD0",
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        html: `Debe haber inicido sesión para poder enviar un mensaje`,
+        background: "#FFFDD0",
+      });
+    }
   });
 
 const enviarCarrito = () => {
   if (carrito != "") {
-    let correo = localStorage.getItem("Correo");
-    if (correo == null) {
-      solicitarCorreo();
+    if (!sesionIniciada) {
+      Swal.fire({
+        icon: "error",
+        html: `Debe haber iniciado sesión para poder realizar una compra`,
+        background: "#FFFDD0",
+      });
     } else {
       Swal.fire({
         showCloseButton: true,
         icon: "question",
-        html: `Enviaremos el método de pago al  correo que usted ha registrado: ${correo}<br>¿Está de acuerdo?`,
+        html: `Enviaremos el método de pago al  correo que usted ha registrado: ${sesionIniciada}<br>¿Está de acuerdo?`,
         confirmButtonText: "Confirmar correo",
         showCancelButton: true,
-        cancelButtonText: "Cambiar correo",
+        cancelButtonText: "Ingresar otro correo",
         background: "#FFFDD0",
       }).then((result) => {
         if (result.isConfirmed) {
-          localStorage.setItem("Correo", correo);
           Swal.fire({
             icon: "success",
-            html: `El carrito y los métodos de pago han sido enviados a ${correo}`,
+            html: `El carrito y los métodos de pago han sido enviados a ${sesionIniciada}`,
             background: "#FFFDD0",
           });
           vaciar();
@@ -248,7 +259,6 @@ const solicitarCorreo = async () => {
     background: "#FFFDD0",
   });
   if (correo) {
-    localStorage.setItem("Correo", correo);
     Swal.fire({
       icon: "success",
       html: `El carrito y los métodos de pago han sido enviados a ${correo}`,
@@ -304,16 +314,7 @@ const registrarUsuario = () => {
   }
   usuariosRegistrados.push({ correo: registroCorreo, password: registroPassword });
   localStorage.setItem("Usuarios", JSON.stringify(usuariosRegistrados));
-  const nombreCorreo = registroCorreo.substring(0, registroCorreo.indexOf("@"));
-  usuarioLogueado.innerHTML = nombreCorreo;
-  sessionStorage.setItem("Sesion", registroCorreo);
-  sesionIniciada = sesionCorreo;
-  sesionIniciadaBoolean = true;
-  return Swal.fire({
-    icon: "success",
-    html: `Bienvenido ${nombreCorreo}`,
-    background: "#FFFDD0",
-  });
+  guardarDatosSesion(registroCorreo);
 };
 
 const iniciarSesion = () => {
@@ -329,17 +330,24 @@ const iniciarSesion = () => {
   ) {
     return Swal.showValidationMessage(`No se ha encontrado un usuario con esas credenciales`);
   } else {
-    const nombreCorreo = sesionCorreo.substring(0, sesionCorreo.indexOf("@"));
-    usuarioLogueado.innerHTML = nombreCorreo;
-    sessionStorage.setItem("Sesion", sesionCorreo);
-    sesionIniciada = sesionCorreo;
-    sesionIniciadaBoolean = true;
-    return Swal.fire({
-      icon: "success",
-      html: `Bienvenido ${nombreCorreo}`,
-      background: "#FFFDD0",
-    });
+    guardarDatosSesion(sesionCorreo);
   }
+};
+
+const guardarDatosSesion = (correo) => {
+  const nombreCorreo = correo.substring(0, correo.indexOf("@"));
+  usuarioLogueado.innerHTML = nombreCorreo;
+  sessionStorage.setItem("Sesion", correo);
+  sesionIniciada = correo;
+  sesionIniciadaBoolean = true;
+  nombreCorreo == "admin" &&
+    ((herramientasAdmin = document.getElementById("herramientasAdmin")),
+    (herramientasAdmin.innerHTML = iconoAdmin));
+  return Swal.fire({
+    icon: "success",
+    html: `Bienvenido ${nombreCorreo}`,
+    background: "#FFFDD0",
+  });
 };
 
 const cerrarSesion = () => {
@@ -347,6 +355,7 @@ const cerrarSesion = () => {
   usuarioLogueado.innerHTML = "Anónimo";
   sesionIniciada = "Anónimo";
   sesionIniciadaBoolean = false;
+  herramientasAdmin != null && (herramientasAdmin.innerHTML = "");
   return Swal.fire({
     icon: "success",
     html: `Sesión cerrada`,
@@ -371,6 +380,8 @@ const validarCorreoYPassword = (correo, password) => {
 let carrito = JSON.parse(localStorage.getItem("Carrito")) || [];
 let precioFinal = JSON.parse(localStorage.getItem("Precio Final")) || 0;
 let usuariosRegistrados = JSON.parse(localStorage.getItem("Usuarios")) || [];
+let herramientasAdmin;
+const iconoAdmin = `<a href="./admin.html"><i class="bi bi-tools"></i></a>`;
 
 let sesionIniciada = sessionStorage.getItem("Sesion") || "Anónimo";
 let sesionIniciadaBoolean = false;
@@ -379,10 +390,11 @@ sesionIniciada != "Anónimo"
     (usuarioLogueado.innerHTML = sesionIniciada.substring(0, sesionIniciada.indexOf("@"))))
   : (usuarioLogueado.innerHTML = sesionIniciada);
 
+sesionIniciada == "admin@admin.com" &&
+  ((herramientasAdmin = document.getElementById("herramientasAdmin")),
+  (herramientasAdmin.innerHTML = iconoAdmin));
+
 render();
 cargaDatos();
 
 /*código sincrónico*/
-
-// TODO Agregar herramientas de admin
-// <i class="bi bi-tools"></i>

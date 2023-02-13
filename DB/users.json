@@ -1,0 +1,6 @@
+{
+  "users": [
+    { "id": 1, "correo": "admin@admin.com", "password": "admin", "isAdmin": true },
+    { "id": 2, "correo": "usuario@usuario.com", "password": "usuario", "isAdmin": false }
+  ]
+}

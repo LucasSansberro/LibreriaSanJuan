@@ -25,22 +25,24 @@
       type="text/css"
       href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
     />
-    <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/contacto.css" />
-    <link rel="icon" href="./pics/logo-asj.png" />
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="icon" href="../pics/logo-asj.png" />
     <title>Librería San Juan</title>
   </head>
   <body class="crema">
     <header id="inicio">
       <nav class="navbar navbar-expand-lg navbar-dark marron-oscuro">
         <div class="container px-2 px-sm-0">
-          <a class="navbar-brand tipografia-logotipo">Librería San Juan</a>
+          <a class="navbar-brand tipografia-logotipo navBarTitulo">Librería San Juan</a>
           <button
             onclick="mostrarCarrito()"
-            class="me-auto botonAbrirCarrito ps-md-4 mt-md-2 border border-0"
+            class="me-auto botonAbrirCarrito ps-md-4 mt-md-2 pb-1 border border-0"
           >
             <i class="bi bi-cart"></i><span id="cantidadCarrito" class="cantidadCarrito">0</span>
           </button>
+          <span class="ps-md-5 mt-md-2 pb-1 text-white-50" id="herramientasAdmin"
+            ></span>
           <button
             class="navbar-toggler"
             type="button"
@@ -53,15 +55,22 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav d-flex w-25 justify-content-between">
-              <li class="nav-item">
-                <a class="nav-link" href="/index.html">Inicio</a>
+            <ul class="navbar-nav d-flex w-50 justify-content-between mt-3">
+              <li
+                class="nav-item text-white-50 d-flex justify-content-between hover"
+                onclick="loginRegistro()"
+              >
+                <i class="bi bi-person-circle nav-link"></i>
+                <p class="nav-link ms-2 ms-lg-0 me-auto" id="usuarioLogueado"></p>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/libros.html">Libros</a>
+                <a class="nav-link" href="./index.html">Inicio</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/contacto.html">Contacto</a>
+                <a class="nav-link" href="./libros.html">Libros</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./contacto.html">Contacto</a>
               </li>
             </ul>
           </div>
@@ -109,77 +118,58 @@
     </header>
 
     <main>
-      <section id="contacto" class="my-3 my-lg-5">
-        <h1 class="text-center mb-5 tipografia-logotipo">Contacto</h1>
-        <div class="container contenedor-contacto madera">
-          <div class="row">
-            <form id="formularioContacto"class="col-12 col-lg-6" role="form">
-              <input
-                type="text"
-                class="col-12 inputs"
-                id="name"
-                placeholder="Nombre"
-                name="name"
-                value=""
-                required
-              />
-              <input
-                type="email"
-                class="col-12 inputs"
-                id="email"
-                placeholder="Correo"
-                name="email"
-                value=""
-                required
-              />
-              <textarea
-                class="col-12 inputs"
-                rows="10"
-                placeholder="Ingrese aquí su mensaje"
-                name="message"
-                required
-              ></textarea>
-              <button class="btn crema boton col-12" id="submit" type="submit" value="SEND">
-                <div class="animacion-boton">
-                  Enviar<span class="texto-boton"><i class="bi bi-send"></i></span>
-                </div>
-              </button>
-            </form>
-            <div class="col-12 col-lg-6">
-              <ul class="datos-contactos d-flex flex-column justify-content-around h-100 col-12">
-                <li>
-                  <i class="bi bi-geo-alt-fill me-3"></i>
-                  <span class="texto-datos-contactos direccion"
-                    >Av. 25 de Mayo 1870 | CABA | Argentina</span
-                  >
-                </li>
-                <li>
-                  <i class="bi bi-telephone-fill me-3"></i>
-                  <span class="texto-datos-contactos telefono">(+54 9 11) 6879 - 4645</span>
-                </li>
-                <li>
-                  <i class="bi bi-envelope-fill me-3"></i>
-                  <span class="texto-datos-contactos gmail"
-                    ><a href="mailto:book_binders@gmail.com" title="Envíame un correo"
-                      >book_binders@gmail.com</a
-                    ></span
-                  >
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12">
-              <iframe
-                class="mapa-contacto mt-4"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.167154608143!2d-58.38422531242835!3d-34.599934467486165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bccac87b690ef9%3A0x4f62f33e5fe41dc9!2sPetersen%2C%20Thiele%20y%20Cruz%20S.A.C.!5e0!3m2!1ses!2sar!4v1675197187434!5m2!1ses!2sar"
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-                title="Mapa con nuestra localización"
-              ></iframe>
-            </div>
-          </div>
+      <section id="presentacion" class="text-center mt-5">
+        <h1 class="tipografia-logotipo">Librería San Juan</h1>
+        <h2 class="tipografia-logotipo">Tu sitio de confianza</h2>
+      </section>
+
+      <section
+        id="mas-vendidos"
+        class="d-flex flex-lg-row flex-column justify-content-around my-5 align-items-center container"
+      >
+        <div class="mb-3 mb-lg-0">
+          <h3 class="madera">Los más vendidos</h3>
+          <p>No te quedes afuera. Los éxitos más grandes del año, ahora con descuento</p>
         </div>
+        <div
+          id="carouselExampleFade"
+          class="carousel slide carousel-fade container-carrousel"
+          data-bs-ride="carousel"
+        >
+          <div class="carousel-inner" id="librosCarrousel">
+            <!-- Entra contenido por JS -->
+          </div>
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselExampleFade"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselExampleFade"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </section>
+
+      <section id="libros" class="container madera my-5 px-0 rounded">
+        <div
+          class="d-flex justify-content-around flex-wrap py-3 py-lg-5 text-center"
+          id="librosContainerIndex"
+        >
+          <!-- Entra contenido por JS -->
+        </div>
+        <button class="btn marron-medio w-100 text-light border border-0">
+          <a class="w-100 d-block" href="/libros.html">Ver más libros</a>
+        </button>
       </section>
     </main>
 
@@ -204,12 +194,12 @@
     </footer>
 
     <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"
-  ></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-  <script src="main.js"></script>
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="../js/main.js"></script>
   </body>
 </html>
