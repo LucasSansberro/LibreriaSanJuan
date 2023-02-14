@@ -1,11 +1,11 @@
 {
   "libros": [
     {
-      "id": 1,
       "titulo": "Los miserables",
       "precio": 500,
       "autor": "Victor Hugo",
-      "portada": "https://peliculasmaslibros.com/wp-content/uploads/2019/09/32697532297_d2da7e750a_k-655x1024.jpg"
+      "portada": "https://peliculasmaslibros.com/wp-content/uploads/2019/09/32697532297_d2da7e750a_k-655x1024.jpg",
+      "id": 1
     },
     {
       "id": 2,
@@ -57,11 +57,37 @@
       "portada": "https://images.cdn3.buscalibre.com/fit-in/360x360/2d/a8/2da82cbaaddce01134626af308eb4f91.jpg"
     },
     {
+      "id": 9,
       "titulo": "Harry Potter y la cámara secreta",
-      "precio": 500,
+      "precio": 1500,
       "autor": "J.K. Rowling",
-      "portada": "https://contentv2.tap-commerce.com/cover/large/9789878000114_1.jpg?id_com=1113",
-      "id": 9
+      "portada": "https://contentv2.tap-commerce.com/cover/large/9789878000114_1.jpg?id_com=1113"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "correo": "admin@admin.com",
+      "password": "admin",
+      "isAdmin": true
+    },
+    {
+      "id": 2,
+      "correo": "usuario@usuario.com",
+      "password": "usuario",
+      "isAdmin": false
+    },
+    {
+      "id": 3,
+      "correo": "usuario2@usuario.com",
+      "password": "usuario",
+      "isAdmin": false
+    },
+    {
+      "id": 4,
+      "correo": "usuario3@usuario.com",
+      "password": "usuario",
+      "isAdmin": false
     }
   ]
 }

@@ -1,3 +1,15 @@
+const fetchLibros = async () => {
+  const librosFetch = await fetch("http://localhost:3000/libros");
+  const libros = await librosFetch.json();
+  return libros;
+};
+
+const fetchUsuarios = async () => {
+  const usuariosFetch = await fetch("http://localhost:3000/users");
+  const usuarios = await usuariosFetch.json();
+  return usuarios;
+};
+
 const cargaDatos = async () => {
   Swal.fire({
     title: "Cargando...",
@@ -10,9 +22,8 @@ const cargaDatos = async () => {
     },
   });
 
-  const librosFetch = await fetch("http://localhost:3000/libros");
-  const librosJson = await librosFetch.json();
-  const libros = librosJson.libros;
+  const libros = await fetchLibros();
+  const usuarios = await fetchUsuarios();
 
   libros.map((libro) => {
     listaLibros.innerHTML += `
@@ -29,39 +40,36 @@ const cargaDatos = async () => {
       </li>`;
   });
 
-  usuariosRegistrados.map((usuario) => {
+  usuarios.map((usuario) => {
     listaUsuarios.innerHTML += `
     <li class="my-1 d-flex justify-content-between align-items-center border-dark border-bottom">
       <p>${usuario.correo} || ${usuario.password} </p>
-      <button class="crema me-3" id="${usuario.correo}">
+      <button class="crema me-3" onclick="eliminarUsuario('${usuario.id}', '${usuario.correo}')">
         <i class="bi bi-trash3-fill"></i>
       </button>
     </li>`;
   });
-  usuariosRegistrados.forEach((usuario) => {
-    const evento = document.getElementById(usuario.correo);
-    evento.addEventListener("click", () => {
-      Swal.fire({
-        title: "¿Estás seguro?",
-        text: `¿Quieres eliminar al usuario ${usuario.correo}`,
-        showCancelButton: true,
-        confirmButtonText: "Eliminar",
-        cancelButtonText: "Cancelar",
-        allowOutsideClick: true,
-        background: "#FFFDD0",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const usuariosFiltrados = usuariosRegistrados.filter(
-            (usuarioFiltro) => usuarioFiltro != usuario
-          );
-          localStorage.setItem("Usuarios", JSON.stringify(usuariosFiltrados));
-          window.location.reload();
-        }
-      });
-    });
-  });
 
   swal.close();
+};
+
+const eliminarUsuario = (id, correo) => {
+  Swal.fire({
+    title: "¿Estás seguro?",
+    text: `¿Quieres eliminar al usuario ${correo}?`,
+    showCancelButton: true,
+    confirmButtonText: "Eliminar",
+    cancelButtonText: "Cancelar",
+    allowOutsideClick: true,
+    background: "#FFFDD0",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`http://localhost:3000/users/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      }).then(() => window.location.reload());
+    }
+  });
 };
 
 const editarLibro = (id, titulo, precio, autor, portada) => {
@@ -105,7 +113,7 @@ const editarLibro = (id, titulo, precio, autor, portada) => {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedValues),
-        });
+        }).then(() => window.location.reload());
       }
     })
     .catch(() => {
@@ -145,8 +153,7 @@ const agregarLibro = () => {
     .then(async (result) => {
       if (result.isConfirmed) {
         const librosFetch = await fetch("http://localhost:3000/libros");
-        const librosJson = await librosFetch.json();
-        const libros = librosJson.libros;
+        const libros = await librosFetch.json();
         const ultimoId = libros[libros.length - 1].id;
         const nuevoLibro = {
           id: ultimoId + 1,
@@ -159,7 +166,7 @@ const agregarLibro = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(nuevoLibro),
-        });
+        }).then(() => window.location.reload());
       }
     })
     .catch(() => {
@@ -181,12 +188,10 @@ const eliminarLibro = (id, titulo) => {
       fetch(`http://localhost:3000/libros/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-      });
+      }).then(() => window.location.reload());
     }
   });
 };
 
 //-------------
-
-let usuariosRegistrados = JSON.parse(localStorage.getItem("Usuarios"));
 cargaDatos();
