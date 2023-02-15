@@ -43,7 +43,7 @@ const cargaDatos = async () => {
   usuarios.map((usuario) => {
     listaUsuarios.innerHTML += `
     <li class="my-1 d-flex justify-content-between align-items-center border-dark border-bottom">
-      <p>${usuario.correo} || ${usuario.password} </p>
+      <p>${usuario.correo} || ${usuario.isAdmin == 1 ? "Admin" : "Usuario"} </p>
       <button class="crema me-3" onclick="eliminarUsuario('${usuario.id}', '${usuario.correo}')">
         <i class="bi bi-trash3-fill"></i>
       </button>

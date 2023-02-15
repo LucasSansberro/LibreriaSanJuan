@@ -79,11 +79,16 @@ const renderCarrito = () => {
   let librosEnCarrito = "";
   carrito.map((libro) => {
     librosEnCarrito += `
-    <li class="d-flex justify-content-between mt-4">
+    <li class="d-flex justify-content-between align-items-center mt-4">
       <p>${libro.titulo} <b>|</b> $${libro.precio}</p>
-      <button class="botonEliminar crema" onclick="eliminarLibroCarrito(${libro.id},${libro.precio})">
+      <div class="text-center d-flex align-items-center mb-3">
+      <button class="btn px-1" onclick="decrementarCantidadCarrito(${libro.id})" > <i class="bi bi-caret-left"></i></button>
+      <span class="border border-dark pb-1 px-2"> ${libro.cantidad} </span>
+      <button class="btn me-2 px-1" onclick="incrementarCantidadCarrito(${libro.id})"><i class="bi bi-caret-right"></i></button>
+      <button class="botonEliminar crema" onclick="eliminarLibroCarrito(${libro.id})">
         <i class="bi bi-trash3-fill"></i>
       </button>
+      </div>
     </li>`;
   });
 
@@ -95,11 +100,11 @@ const renderCarrito = () => {
   localStorage.setItem("Precio Final", JSON.stringify(precioFinal));
 };
 
-const renderSesion = (correo) => {
-  const nombreCorreo = correo.substring(0, correo.indexOf("@"));
+const renderSesion = (usuario) => {
+  const nombreCorreo = usuario.correo.substring(0, usuario.correo.indexOf("@"));
   usuarioLogueado.innerHTML = nombreCorreo;
-  sessionStorage.setItem("Sesion", correo);
-  sesionIniciada = correo;
+  sessionStorage.setItem("Sesion", JSON.stringify(usuario));
+  sesionIniciada = usuario;
   sesionIniciadaBoolean = true;
   nombreCorreo == "admin" &&
     ((herramientasAdmin = document.getElementById("herramientasAdmin")), (herramientasAdmin.innerHTML = iconoAdmin));
@@ -109,11 +114,16 @@ const renderSesion = (correo) => {
 //Funciones del carrito
 const agregarLibroCarrito = async (id) => {
   if (carrito.length < 12) {
-    const libros = await fetchLibros();
-    const libro = libros.find((libro) => libro.id == id);
-    carrito.push(libro);
-    precioFinal += libro.precio;
-    renderCarrito();
+    const libroRepetido = carrito.find((libro) => libro.id == id);
+    if (libroRepetido == undefined) {
+      const libros = await fetchLibros();
+      const libro = libros.find((libro) => libro.id == id);
+      carrito.push({ ...libro, cantidad: 1 });
+      precioFinal += libro.precio;
+      renderCarrito();
+    } else {
+      incrementarCantidadCarrito(libroRepetido.id);
+    }
     Toastify({
       text: "¡Producto agregado!",
       duration: 1500,
@@ -122,22 +132,57 @@ const agregarLibroCarrito = async (id) => {
       style: { background: "linear-gradient(to right, #4F7178, #E4AF8E)" },
     }).showToast();
   } else {
-    Swal.fire({
-      title: "Lo sentimos",
-      html: "Solo aceptamos hasta 12 productos.<br> Para compras mayoristas, contáctenos a través de un correo electrónico",
-      icon: "error",
-      confirmButtonText: "Cerrar",
-      background: "#F2DEBD",
-      allowOutsideClick: false,
-    });
+    alertaSimple(
+      "error",
+      "El máximo permitido es de 12 títulos distintos. Para compras mayoristas, contáctenos a través de un correo electrónico"
+    );
   }
 };
 
-const eliminarLibroCarrito = (id, precio) => {
-  let idx = carrito.findIndex((p) => p.id == id);
-  let resta = carrito.find((p) => p.precio == precio);
-  carrito.splice(idx, 1);
-  precioFinal -= resta.precio;
+const incrementarCantidadCarrito = (id) => {
+  const libro = carrito.find((libro) => libro.id == id);
+  if (libro.cantidad >= 10) {
+    alertaSimple(
+      "error",
+      "El máximo permitido es de 10 unidades por título. Para compras mayoristas, contáctenos a través de un correo electrónico"
+    );
+  } else {
+    const indexLibro = carrito.indexOf(libro);
+    carrito[indexLibro].cantidad++;
+    precioFinal += libro.precio;
+    renderCarrito();
+  }
+};
+
+const decrementarCantidadCarrito = (id) => {
+  const libro = carrito.find((libro) => libro.id == id);
+  if (libro.cantidad <= 1) {
+    Swal.fire({
+      showCloseButton: true,
+      icon: "question",
+      html: `¿Quiere eliminar a ${libro.titulo} de su carrito?`,
+      confirmButtonText: "Confirmar",
+      showCancelButton: true,
+      cancelButtonText: "Cancelar",
+      background: "#FFFDD0",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        eliminarLibroCarrito(libro.id, libro.precio);
+      }
+    });
+  } else {
+    const indexLibro = carrito.indexOf(libro);
+    carrito[indexLibro].cantidad--;
+    precioFinal -= libro.precio;
+    renderCarrito();
+  }
+};
+
+const eliminarLibroCarrito = (id) => {
+  const libro = carrito.find((libro) => libro.id == id);
+  const indexLibro = carrito.indexOf(libro);
+  carrito.splice(indexLibro, 1);
+  precioFinal -= libro.precio * libro.cantidad;
   renderCarrito();
 };
 
@@ -168,14 +213,24 @@ const enviarCarrito = () => {
       Swal.fire({
         showCloseButton: true,
         icon: "question",
-        html: `Enviaremos el método de pago al  correo que usted ha registrado: ${sesionIniciada}<br>¿Está de acuerdo?`,
+        html: `Enviaremos la facturación y el método de pago al  correo que usted ha registrado: ${sesionIniciada.correo}<br>¿Está de acuerdo?`,
         confirmButtonText: "Confirmar",
         showCancelButton: true,
         cancelButtonText: "Cancelar",
         background: "#FFFDD0",
       }).then((result) => {
         if (result.isConfirmed) {
-          alertaSimple("success", `El carrito y los métodos de pago han sido enviados a ${sesionIniciada}`);
+          const factura = {
+            usuarioId: sesionIniciada.id,
+            precioFinal: precioFinal,
+            libros: [...carrito],
+          };
+          fetch("http://localhost:3000/facturas", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(factura),
+          });
+          alertaSimple("success", `La factura y los métodos de pago han sido enviados a ${sesionIniciada.correo}`);
           vaciarCarrito();
           ocultarCarrito();
         }
@@ -193,7 +248,7 @@ const loginRegistroModal = () => {
         title: "Datos de sesión",
         html: `
         <div class="d-flex flex-column">
-          <p>Sesión iniciada con ${sesionIniciada}</p>
+          <p>Sesión iniciada con ${sesionIniciada.correo}</p>
           <button onclick="cerrarSesion()" class="btn btn-danger my-3 p-3">
             Cerrar sesión 
           </button>
@@ -254,8 +309,8 @@ const registrarUsuario = async () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: ultimoId + 1, correo: registroCorreo, password: registroPassword, isAdmin: false }),
       }).then(() => Swal.close()),
-      renderSesion(registroCorreo))
-    : alertaSimple("error", "Ya existe un usuario con ese correo");
+      renderSesion({ id: ultimoId + 1, correo: registroCorreo, password: registroPassword, isAdmin: false }))
+    : Swal.showValidationMessage("Error. Ya existe un usuario con ese correo");
 };
 
 const iniciarSesion = async () => {
@@ -265,16 +320,16 @@ const iniciarSesion = async () => {
     return;
   }
   const usuarios = await fetchUsuarios();
-  const usuariosFiltrados = usuarios.filter(
+  const usuarioFiltrados = usuarios.filter(
     (usuario) => usuario.correo == sesionCorreo && usuario.password == sesionPassword
   );
-  usuariosFiltrados.length > 0
-    ? renderSesion(sesionCorreo)
+  usuarioFiltrados.length > 0
+    ? renderSesion(usuarioFiltrados[0])
     : Swal.showValidationMessage(`No se ha encontrado un usuario con esas credenciales`);
 };
 
 const cerrarSesion = () => {
-  sessionStorage.setItem("Sesion", "Anónimo");
+  sessionStorage.clear();
   usuarioLogueado.innerHTML = "Anónimo";
   sesionIniciada = "Anónimo";
   sesionIniciadaBoolean = false;
@@ -299,18 +354,15 @@ const alertaSimple = (icono, mensaje) => {
 let carrito = JSON.parse(localStorage.getItem("Carrito")) || [];
 let precioFinal = JSON.parse(localStorage.getItem("Precio Final")) || 0;
 
-let herramientasAdmin;
-const iconoAdmin = `<a class="me-3" href="./admin.html"><i class="bi bi-tools"></i></a>`;
-
-let sesionIniciada = sessionStorage.getItem("Sesion") || "Anónimo";
+let sesionIniciada = JSON.parse(sessionStorage.getItem("Sesion")) || "Anónimo";
 let sesionIniciadaBoolean = false;
 sesionIniciada != "Anónimo"
   ? ((sesionIniciadaBoolean = true),
-    (usuarioLogueado.innerHTML = sesionIniciada.substring(0, sesionIniciada.indexOf("@"))))
+    (usuarioLogueado.innerHTML = sesionIniciada.correo.substring(0, sesionIniciada.correo.indexOf("@"))))
   : (usuarioLogueado.innerHTML = sesionIniciada);
 
-sesionIniciada == "admin@admin.com" &&
-  ((herramientasAdmin = document.getElementById("herramientasAdmin")), (herramientasAdmin.innerHTML = iconoAdmin));
+const iconoAdmin = `<a class="me-3" href="./admin.html"><i class="bi bi-tools"></i></a>`;
+sesionIniciada.correo == "admin@admin.com" && (document.getElementById("herramientasAdmin").innerHTML = iconoAdmin);
 
 Swal.fire({
   title: "Cargando...",
@@ -324,9 +376,10 @@ Swal.fire({
 });
 
 renderCarrito();
-
 document.getElementById("librosContainerIndex") != null && cargaDatosIndex();
 document.getElementById("librosContainer") != null && cargaDatosLibros();
+
+swal.close();
 
 //Funciones para los formularios
 document.getElementById("formulario") != null &&
@@ -344,7 +397,5 @@ document.getElementById("formularioContacto") != null &&
       alertaSimple("error", "Debe iniciar sesión antes de enviar un mensaje");
     }
   });
-
-swal.close();
 
 /*código sincrónico*/
