@@ -1,11 +1,11 @@
 const fetchLibros = async () => {
-  const librosFetch = await fetch("http://localhost:3000/libros");
+  const librosFetch = await fetch(`${rutaFetch}/libros`);
   const libros = await librosFetch.json();
   return libros;
 };
 
 const fetchUsuarios = async () => {
-  const usuariosFetch = await fetch("http://localhost:3000/users");
+  const usuariosFetch = await fetch(`${rutaFetch}/usuarios`);
   const usuarios = await usuariosFetch.json();
   return usuarios;
 };
@@ -28,12 +28,12 @@ const cargaDatos = async () => {
   libros.map((libro) => {
     listaLibros.innerHTML += `
       <li class="my-1 d-flex justify-content-between align-items-center border-dark border-bottom">
-        <p>${libro.titulo} || $${libro.precio} || ${libro.autor}</p>
+        <p>${libro.libro_titulo} || $${libro.libro_precio} || ${libro.libro_autor}</p>
         <div>
-          <button class="crema me-3" onclick="editarLibro('${libro.id}','${libro.titulo}', '${libro.precio}', '${libro.autor}', '${libro.portada}')">
+          <button class="crema me-3" onclick="editarLibro('${libro.libro_id}','${libro.libro_titulo}', '${libro.libro_precio}', '${libro.libro_autor}', '${libro.libro_portada}')">
             <i class="bi bi-pencil-square p-1"></i>
           </button>
-          <button class="crema me-3" onclick="eliminarLibro('${libro.id}','${libro.titulo}')">
+          <button class="crema me-3" onclick="eliminarLibro('${libro.libro_id}','${libro.libro_titulo}')">
             <i class="bi bi-trash3-fill"></i>
           </button>
         </div>
@@ -43,8 +43,8 @@ const cargaDatos = async () => {
   usuarios.map((usuario) => {
     listaUsuarios.innerHTML += `
     <li class="my-1 d-flex justify-content-between align-items-center border-dark border-bottom">
-      <p>${usuario.correo} || ${usuario.isAdmin == 1 ? "Admin" : "Usuario"} </p>
-      <button class="crema me-3" onclick="eliminarUsuario('${usuario.id}', '${usuario.correo}')">
+      <p>${usuario.usuario_correo}  || ${usuario.admin == true ? "Admin" : "Usuario"}  </p>
+      <button class="crema me-3" onclick="eliminarUsuario('${usuario.usuario_id}', '${usuario.usuario_correo}')">
         <i class="bi bi-trash3-fill"></i>
       </button>
     </li>`;
@@ -64,9 +64,10 @@ const eliminarUsuario = (id, correo) => {
     background: "#FFFDD0",
   }).then((result) => {
     if (result.isConfirmed) {
-      fetch(`http://localhost:3000/users/${id}`, {
+      fetch(`${rutaFetch}/usuarios`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
+        body: id,
       }).then(() => window.location.reload());
     }
   });
@@ -104,12 +105,13 @@ const editarLibro = (id, titulo, precio, autor, portada) => {
     .then((result) => {
       if (result.isConfirmed) {
         const updatedValues = {
-          titulo: result.value.titulo,
-          precio: parseInt(result.value.precio),
-          autor: result.value.autor,
-          portada: result.value.portada,
+          libro_id: id,
+          libro_precio: parseInt(result.value.precio),
+          libro_titulo: result.value.titulo,
+          libro_autor: result.value.autor,
+          libro_portada: result.value.portada,
         };
-        fetch(`http://localhost:3000/libros/${id}`, {
+        fetch(`${rutaFetch}/libros`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedValues),
@@ -152,17 +154,13 @@ const agregarLibro = () => {
   })
     .then(async (result) => {
       if (result.isConfirmed) {
-        const librosFetch = await fetch("http://localhost:3000/libros");
-        const libros = await librosFetch.json();
-        const ultimoId = libros[libros.length - 1].id;
         const nuevoLibro = {
-          id: ultimoId + 1,
-          titulo: result.value.titulo,
-          precio: parseInt(result.value.precio),
-          autor: result.value.autor,
-          portada: result.value.portada,
+          libro_precio: parseInt(result.value.precio),
+          libro_titulo: result.value.titulo,
+          libro_autor: result.value.autor,
+          libro_portada: result.value.portada,
         };
-        fetch("http://localhost:3000/libros", {
+        fetch(`${rutaFetch}/libros`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(nuevoLibro),
@@ -185,13 +183,15 @@ const eliminarLibro = (id, titulo) => {
     background: "#FFFDD0",
   }).then((result) => {
     if (result.isConfirmed) {
-      fetch(`http://localhost:3000/libros/${id}`, {
+      fetch(`${rutaFetch}/libros`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
+        body: id,
       }).then(() => window.location.reload());
     }
   });
 };
 
 //-------------
+const rutaFetch = "http://localhost:8080/apirest-1.0-SNAPSHOT/api";
 cargaDatos();
